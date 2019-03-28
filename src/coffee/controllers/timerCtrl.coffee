@@ -49,7 +49,9 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
     $scope.mode = auto
     $scope.word = DataAdapter.searchKeyword
     Option.onChanged('stepTime', initializePicker)
-
+    setTimeout -> 
+      console.log('timeouts working')
+    , 1000
 
   ###
    Initialize search form.
@@ -145,6 +147,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
    send time entry.
   ###
   postEntry = (minutes) ->
+    console.log('called enter', minutes)
     hours = Math.floor(minutes / 60 * 100) / 100 # 0.00
     postParam = { hours: hours , comment: $scope.comment.text }
     PluginManager.notify(PluginManager.events.SEND_TIME_ENTRY, postParam, DataAdapter.selectedTask, $scope.mode.name)

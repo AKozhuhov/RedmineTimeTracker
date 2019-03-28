@@ -19,9 +19,10 @@ html(ng-app='timeTracker', ng-csp="", style="font-size:{{options.fontSize}}%", n
     // svg
     include ../../app/images/tomato.svg
 
-    if electron
-      script.
-        window.jQuery = window.$ = require('../components/jquery/js/jquery.min.js');
+    //- if electron
+
+    script.
+      window.jQuery = window.$ = require('../components/jquery/js/jquery.min.js');
 
   body
 
@@ -44,8 +45,8 @@ html(ng-app='timeTracker', ng-csp="", style="font-size:{{options.fontSize}}%", n
 
     div.src
       // bower
-      unless electron
-        script(src='../components/jquery/js/jquery.min.js')
+      //- unless electron
+      script(src='../components/jquery/js/jquery.min.js')
       script(src='../components/angular/js/angular.min.js')
       script(src='../components/angular-route/angular-route.js')
       script(src='../components/angular-animate/js/angular-animate.min.js')
@@ -75,10 +76,10 @@ html(ng-app='timeTracker', ng-csp="", style="font-size:{{options.fontSize}}%", n
         script(src='../scripts/state.js')
         script(src='../scripts/services/const.js')
         script(src='../scripts/services/base64.js')
-        if electron
-          script(src='../scripts/services/electronPF.js')
-        else
-          script(src='../scripts/services/chromePF.js')
+        //- if electron
+        script(src='../scripts/services/electronPF.js')
+        //- else
+        //-   script(src='../scripts/services/chromePF.js')
         script(src='../scripts/services/account.js')
         script(src='../scripts/services/redmine.js')
         script(src='../scripts/services/task.js')

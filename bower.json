@@ -15,8 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.2.16",
-    "angular-animate": "~1.2.16",
+    "angular": "~1.2.6",
+    "angular-animate": "~1.2.6",
     "angular-bootstrap": "0.10.0",
     "angular-jquery-timepicker": "https://github.com/ujiro99/angular-jquery-timepicker.git#master",
     "angular-route": "1.2.19",
