@@ -18,3 +18,10 @@ Electron App
 ## Licence
 
 MIT
+
+## Steps
+
+- npm install
+- grunt dev
+- grunt watch
+- npm start

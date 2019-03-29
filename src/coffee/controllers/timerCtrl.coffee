@@ -20,7 +20,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   # comment objects
   $scope.comment = { text: "", maxLength: COMMENT_MAX, remain: COMMENT_MAX }
   # ticked time
-  $scope.time = { min: 0 }
+  $scope.time = { min: 0, logCalled: 0, calledAt: [] }
   # time for time-picker
   $scope.picker = { manualTime: BASE_TIME }
   # Count down time for Pomodoro mode
@@ -140,14 +140,16 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   $scope.$on 'timer-tick', (e, time) ->
     if (not State.isAutoTracking) and (not State.isPomodoring)
       return
-    $scope.time.min = Math.floor(time.millis / (60000))
 
+    $scope.time.min = Math.floor(time.millis / (60000))
+    if ($scope.time.min > 0 and $scope.time.min % 5 == 0 and $scope.time.calledAt.indexOf($scope.time.min) == -1)
+      $scope.time.calledAt.push($scope.time.min)
+      postEntry(5)
 
   ###
    send time entry.
   ###
   postEntry = (minutes) ->
-    console.log('called enter', minutes)
     hours = Math.floor(minutes / 60 * 100) / 100 # 0.00
     postParam = { hours: hours , comment: $scope.comment.text }
     PluginManager.notify(PluginManager.events.SEND_TIME_ENTRY, postParam, DataAdapter.selectedTask, $scope.mode.name)
@@ -159,6 +161,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
       comment:    postParam.comment
       activityId: DataAdapter.selectedActivity.id
       type:       DataAdapter.selectedTask.type
+    console.log('conf', conf)
     url = DataAdapter.selectedTask.url
     account = DataAdapter.getAccount(url)
     Redmine.get(account).submitTime(conf, submitSuccess, submitError(conf))
@@ -197,6 +200,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   ###
   submitSuccess = (msg, status) ->
     if msg?.time_entry?.id?
+      $scope.time.logCalled = $scope.time.logCalled++;
       PluginManager.notify(PluginManager.events.SENDED_TIME_ENTRY,  msg.time_entry, status, DataAdapter.selectedTask, $scope.mode.name)
       Message.toast Resource.string("msgSubmitTimeSuccess")
     else
@@ -250,7 +254,11 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
       if State.isAutoTracking # store temporary
         @trackedTime = time
       else
-        postEntry(time.days * 60 * 24 + time.hours * 60 + time.minutes)
+        totalMinutes = parseInt(time.days * 60 * 24 + time.hours * 60 + time.minutes)
+        minutes = totalMinutes % 5
+        if(minutes != 0)
+          postEntry(minutes)
+
 
 
   class Pomodoro

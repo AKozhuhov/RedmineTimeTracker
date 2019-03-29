@@ -23,7 +23,9 @@
     "start": "electron ./app",
     "clean": "rimraf ./release/electron",
     "dist:chrome": "grunt build-chrome && grunt compress:ci",
-    "dist:electron": "grunt build-electron && yarn run clean && build --x64 --ia32"
+    "dist:electron": "grunt build-electron && yarn run clean && build --x64 --ia32 -l",
+    "build:linux": "grunt build-electron && yarn run clean && build -l --x64",
+    "build:window": "grunt build-electron && yarn run clean && build --windows --x64"
   },
   "build": {
     "appId": "org.ujiro99.redminetimetracker",
