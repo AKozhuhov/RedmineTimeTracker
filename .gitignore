@@ -8,3 +8,4 @@ app/components
 *.css
 *.html
 *.map
+.DS_Store.DS_Store
