@@ -1,9 +1,9 @@
 'use strict'
-{ app, BrowserWindow, Menu } = require('electron')
+{ app, BrowserWindow, Menu, Tray } = require('electron')
 { autoUpdater } = require("electron-updater")
 isDev = require('electron-is-dev')
 storage = require('electron-json-storage')
-
+path = require('path')
 
 if isDev
   # adds debug features like hotkeys for triggering dev tools and reload
@@ -16,6 +16,9 @@ storage.get 'debug', (err, debug) ->
   if debug
     require('electron-debug')({ showDevTools: true })
 
+# icon_128_gray.png
+iconPath = path.join(__dirname, 'images/icon_128_gray.png')
+# console.log('iconPath', iconPath)
 
 LOGIN = "login"
 BOUND = "bound"
@@ -55,6 +58,7 @@ app.on 'activate', ->
 
 app.on 'ready', ->
   # console.log('ready')
+  # tray = new Tray(iconPath)
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
   getWindowBounds (bound) ->
     _mainWindow = createMainWindow(bound)
