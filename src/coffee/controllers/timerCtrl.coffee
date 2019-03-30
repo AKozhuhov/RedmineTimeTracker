@@ -13,6 +13,9 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   # represents 1 minutes
   ONE_MINUTE = 1
 
+  # Sync_at_every_minutes
+  SYNC_MINUTES = 10
+
   # Application state
   $scope.state = State
   # Application data
@@ -49,9 +52,6 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
     $scope.mode = auto
     $scope.word = DataAdapter.searchKeyword
     Option.onChanged('stepTime', initializePicker)
-    setTimeout -> 
-      console.log('timeouts working')
-    , 1000
 
   ###
    Initialize search form.
@@ -142,9 +142,9 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
       return
 
     $scope.time.min = Math.floor(time.millis / (60000))
-    if ($scope.time.min > 0 and $scope.time.min % 5 == 0 and $scope.time.calledAt.indexOf($scope.time.min) == -1)
+    if ($scope.time.min > 0 and $scope.time.min % SYNC_MINUTES == 0 and $scope.time.calledAt.indexOf($scope.time.min) == -1)
       $scope.time.calledAt.push($scope.time.min)
-      postEntry(5)
+      postEntry(SYNC_MINUTES)
 
   ###
    send time entry.
@@ -255,7 +255,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
         @trackedTime = time
       else
         totalMinutes = parseInt(time.days * 60 * 24 + time.hours * 60 + time.minutes)
-        minutes = totalMinutes % 5
+        minutes = totalMinutes % SYNC_MINUTES
         if(minutes != 0)
           postEntry(minutes)
 
