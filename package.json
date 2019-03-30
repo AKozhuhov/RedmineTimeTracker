@@ -1,6 +1,6 @@
 {
   "name": "RedmineTimeTracker",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "Time Tracking tool for Redmine",
   "author": "Yujiro Takeda <siro.cola@gmail.com>",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "dist:electron": "grunt build-electron && yarn run clean && build --x64 --ia32",
     "build:mac": "grunt build-electron && yarn run clean && build --mac --x64 --ia32",
     "build:linux": "grunt build-electron && yarn run clean && build --linux --x64 --ia32",
-    "build:window": "grunt build-electron && yarn run clean && build --windows --x64 --ia32"
+    "build:windows": "grunt build-electron && yarn run clean && build --windows --x64 --ia32"
   },
   "build": {
     "appId": "org.ujiro99.redminetimetracker",

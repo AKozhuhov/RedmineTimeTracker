@@ -22,6 +22,21 @@ MIT
 - grunt watch
 - npm start
 
+## How to build ? [ In MacOSX ]
+
+### Windows
+1. We need to install wine using brew: `brew install wine`
+2. Run `npm run build:windows`
+
+### Linux
+1. Need to install fpm for making linux build on MacOSX.
+2. Run `brew install gnu-tar`
+3. Run `gem install --no-ri --no-rdoc fpm`
+4. Run `npm run build:linux`
+
+### Macos
+1. Run `npm run build:mac`
+
 ## Change Log
 ### 30 March 2019
 1. Removed Option of Pomodoro tracker and Manual Tracking
