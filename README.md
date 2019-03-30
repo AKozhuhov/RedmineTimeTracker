@@ -23,6 +23,6 @@ MIT
 - npm start
 
 ## Change Log
-# 30 March 2019
+### 30 March 2019
 1. Removed Option of Pomodoro tracker and Manual Tracking
 2. Changed time logging behavior to log every 10 minutes instead of only on stop button.
