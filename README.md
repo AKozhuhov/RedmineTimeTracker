@@ -3,17 +3,13 @@
 ![icon](https://github.com/ujiro99/RedmineTimeTracker/blob/master/app/images/icon_128.png)
 
 Time tracking tool for Redmine.  
-This tool works as Chrome App or Electron App.
+This tool works as Electron App.
 
 ## Download
 
-Chrome App
-
-* [Redmine Time Tracker on Chrome web Store](https://chrome.google.com/webstore/detail/redmine-time-tracker/dmmneannhefdfnmkfheapickfaialefp?utm_source=chrome-ntp-launcher)
-
 Electron App
 
-* [Release](https://github.com/ujiro99/RedmineTimeTracker/releases)
+* [Release](https://github.com/hupptechnologies/RedmineTimeTracker/releases)
 
 ## Licence
 
@@ -25,3 +21,8 @@ MIT
 - grunt dev
 - grunt watch
 - npm start
+
+## Change Log
+# 30 March 2019
+1. Removed Option of Pomodoro tracker and Manual Tracking
+2. Changed time logging behavior to log every 10 minutes instead of only on stop button.
