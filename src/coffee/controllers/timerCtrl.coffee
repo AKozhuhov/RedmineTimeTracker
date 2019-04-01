@@ -151,13 +151,14 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   ###
   postEntry = (minutes) ->
     hours = Math.floor(minutes / 60 * 100) / 100 # 0.00
-    postParam = { hours: hours , comment: $scope.comment.text }
+    minuteString = minutes+'m'
+    postParam = { hours: hours , comment: $scope.comment.text, minutes: minuteString }
     PluginManager.notify(PluginManager.events.SEND_TIME_ENTRY, postParam, DataAdapter.selectedTask, $scope.mode.name)
     total = DataAdapter.selectedTask.total + postParam.hours
     DataAdapter.selectedTask.total = Math.floor(total * 100) / 100
     conf =
       id:         DataAdapter.selectedTask.id
-      hours:      postParam.hours
+      hours:      postParam.minutes
       comment:    postParam.comment
       activityId: DataAdapter.selectedActivity.id
       type:       DataAdapter.selectedTask.type

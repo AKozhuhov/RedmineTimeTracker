@@ -38,6 +38,10 @@ MIT
 1. Run `npm run build:mac`
 
 ## Change Log
+
 ### 30 March 2019
 1. Removed Option of Pomodoro tracker and Manual Tracking
 2. Changed time logging behavior to log every 10 minutes instead of only on stop button.
+
+### 01 April 2019
+1. Accurate log time for 10 minutes sync.
