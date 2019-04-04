@@ -59,3 +59,8 @@ form(action='#', method='POST', name='time_entry')
                           ng-change='comment.remain = comment.maxLength - comment.text.length')
     div
       span.label.label-danger(ng-show="comment.remain < 0") {{comment.remain}}
+
+script(type="text/ng-template" 
+      id="myModalContent.html")
+  div.modal-header
+    h3.modal-title(id="modal-title") Hey there

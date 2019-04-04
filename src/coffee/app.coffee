@@ -11,3 +11,15 @@ timeTracker = angular.module('timeTracker',
    pf,
    'pascalprecht.translate'
   ])
+
+###
+timeTracker.run(($window, $rootScope) -> 
+  $window.addEventListener("offline", () -> 
+    console.log('offline')
+  )
+
+  $window.addEventListener("online", () -> 
+    console.log('online')
+  )
+)
+###

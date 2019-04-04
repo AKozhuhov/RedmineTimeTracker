@@ -1,4 +1,4 @@
-timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket, DataAdapter, Message, State, Resource, Option, Log, PluginManager, Const) ->
+timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket, DataAdapter, Message, State, Resource, Option, Log, PluginManager, Const, $modal) ->
   
   # comment charactor max
   COMMENT_MAX = 255
@@ -145,10 +145,24 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
     if (not State.isAutoTracking) and (not State.isPomodoring)
       return
 
+    currentMinutes = Math.floor(time.millis / (60000))
+    if currentMinutes > $scope.time.min
+      console.log('update localStorage')
+      params =
+        id:         DataAdapter.selectedTask.id
+        minutes:     currentMinutes
+        comment:    $scope.comment.text
+        activityId: DataAdapter.selectedActivity.id
+        type:       DataAdapter.selectedTask.type
+      localStorage.setItem("log", JSON.stringify(params))
+
     $scope.time.min = Math.floor(time.millis / (60000))
-    if ($scope.time.min > 0 and $scope.time.min % SYNC_MINUTES == 0 and $scope.time.calledAt.indexOf($scope.time.min) == -1)
-      $scope.time.calledAt.push($scope.time.min)
-      postEntry(SYNC_MINUTES)
+
+    ### Old logic that add log at every 10 minutes
+      if ($scope.time.min > 0 and $scope.time.min % SYNC_MINUTES == 0 and $scope.time.calledAt.indexOf($scope.time.min) == -1)
+        $scope.time.calledAt.push($scope.time.min)
+        postEntry(SYNC_MINUTES)
+    ###
 
   ###
    send time entry.
@@ -170,8 +184,25 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
     url = DataAdapter.selectedTask.url
     account = DataAdapter.getAccount(url)
     Redmine.get(account).submitTime(conf, submitSuccess, submitError(conf))
+    console.log("string", Resource.string("msgSubmitTimeEntry", [DataAdapter.selectedTask.text, util.formatMinutes(minutes)]))
     Message.toast Resource.string("msgSubmitTimeEntry", [DataAdapter.selectedTask.text, util.formatMinutes(minutes)])
 
+  ###
+    Add log from storage
+  ###
+  addLog = (params) ->
+    minutes = params.minutes+'m'
+    conf =
+      id:         params.id
+      hours:      minutes
+      comment:    params.comment
+      activityId: params.activityId
+      type:       params.type
+    console.log('conf', conf)
+    url = DataAdapter.selectedTask.url
+    account = DataAdapter.getAccount(url)
+    Redmine.get(account).submitTime(conf, submitSuccess, submitError(conf))
+    Message.toast Resource.string("msgSubmitTimeEntry", ["for task #"+params.id, util.formatMinutes(params.minutes)])
 
   ###
    check time entry before starting track.
@@ -208,6 +239,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
       $scope.time.logCalled = $scope.time.logCalled++;
       PluginManager.notify(PluginManager.events.SENDED_TIME_ENTRY,  msg.time_entry, status, DataAdapter.selectedTask, $scope.mode.name)
       Message.toast Resource.string("msgSubmitTimeSuccess")
+      localStorage.clear()
     else
       submitError(msg, status)
 
@@ -219,6 +251,25 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
     PluginManager.notify(PluginManager.events.SENDED_TIME_ENTRY, msg, status, DataAdapter.selectedTask, $scope.mode.name)
     Message.toast(Resource.string("msgSubmitTimeFail") + Resource.string("status", status), 3000)
     Log.warn conf
+
+  ###
+    Check comment
+  ###
+  checkComment = () ->
+    if $scope.comment.text == ""
+      alert("Please add comment first")
+      ###
+        $modal.open(
+          animation: true,
+          controller: "TimerCtrl",
+          # template: "<span>Test</span>",
+          templateUrl: "myModalContent.html",
+          size: "sm"
+        )
+      ###
+      return false
+    else
+      return true
 
 
   class Auto
@@ -251,18 +302,35 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
         else if checkResult is CHECK.OK
           $scope.$broadcast 'timer-stop'
       else
-        State.isAutoTracking = true
-        State.title = "Tracking..."
-        $scope.$broadcast 'timer-start'
+        storageData = localStorage.getItem("log")
+        if storageData != null
+          storageData = JSON.parse(localStorage.getItem("log"))
+          alertMessage = "Old log is not added yet. Adding now, please start after some seconds or minute\n
+            • TaskID: "+storageData.id+"\n
+            • Minutes: "+storageData.minutes+"\n
+          "
+          alert(alertMessage)
+          addLog(storageData)
+        else
+          checkCommentResult = checkComment()
+          if checkCommentResult
+            State.isAutoTracking = true
+            State.title = "Tracking..."
+            $scope.$broadcast 'timer-start'
 
     onTimerStopped: (time) =>
       if State.isAutoTracking # store temporary
         @trackedTime = time
       else
         totalMinutes = parseInt(time.days * 60 * 24 + time.hours * 60 + time.minutes)
-        minutes = totalMinutes % SYNC_MINUTES
-        if(minutes != 0)
-          postEntry(minutes)
+
+        postEntry(totalMinutes)
+
+        ### Old logic for 10 minutes sync
+          minutes = totalMinutes % SYNC_MINUTES
+          if(minutes != 0)
+            postEntry(minutes)
+        ###
 
 
 
