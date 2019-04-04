@@ -54,6 +54,7 @@ form(action='#', method='POST', name='time_entry')
     textarea.form-control(name='comment',
                           rows='2',
                           placeholder='comments...',
+                          ng-disabled='state.isAutoTracking',
                           ng-model='comment.text',
                           ng-change='comment.remain = comment.maxLength - comment.text.length')
     div

@@ -1,5 +1,5 @@
 timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket, DataAdapter, Message, State, Resource, Option, Log, PluginManager, Const) ->
-
+  
   # comment charactor max
   COMMENT_MAX = 255
   # mode switching animation time [ms]
@@ -23,7 +23,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   # comment objects
   $scope.comment = { text: "", maxLength: COMMENT_MAX, remain: COMMENT_MAX }
   # ticked time
-  $scope.time = { min: 0, logCalled: 0, calledAt: [] }
+  $scope.time = { min: 0, logCalled: 0, calledAt: [], notLoggedMinutes: 0 }
   # time for time-picker
   $scope.picker = { manualTime: BASE_TIME }
   # Count down time for Pomodoro mode
@@ -38,6 +38,9 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   auto = pomodoro = manual = null
   # Application options
   options = Option.getOptions()
+
+  # localStorage.setItem('test', JSON.stringify({foo: 'foo'}))
+  # console.log(JSON.parse(localStorage.getItem('test')).foo)
 
 
   ###
@@ -131,6 +134,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
    on timer stopped, send time entry.
   ###
   $scope.$on 'timer-stopped', (e, time) ->
+    $scope.time.calledAt = [];
     $scope.mode.onTimerStopped(time)
 
 
