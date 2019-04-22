@@ -257,7 +257,8 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
   ###
   checkComment = () ->
     if $scope.comment.text == ""
-      alert("Please add comment first")
+      # alert("Please add comment first")
+      Message.toast("Please add comment first", 3000)
       ###
         $modal.open(
           animation: true,
@@ -309,7 +310,7 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
             • TaskID: "+storageData.id+"\n
             • Minutes: "+storageData.minutes+"\n
           "
-          alert(alertMessage)
+          # alert(alertMessage)
           addLog(storageData)
         else
           checkCommentResult = checkComment()
