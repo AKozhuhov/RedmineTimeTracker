@@ -201,8 +201,30 @@ timeTracker.controller 'TimerCtrl', ($scope, $timeout, Redmine, Project, Ticket,
     console.log('conf', conf)
     url = DataAdapter.selectedTask.url
     account = DataAdapter.getAccount(url)
-    Redmine.get(account).submitTime(conf, submitSuccess, submitError(conf))
+    Redmine.get(account).submitTime(conf, successForOldLog, errorForOldLog(conf))
     Message.toast Resource.string("msgSubmitTimeEntry", ["for task #"+params.id, util.formatMinutes(params.minutes)])
+
+  ###
+    Success handle function for add previous log
+  ###
+  successForOldLog = (msg, status) ->
+    if msg?.time_entry?.id?
+      $scope.time.logCalled = $scope.time.logCalled++;
+      PluginManager.notify(PluginManager.events.SENDED_TIME_ENTRY,  msg.time_entry, status, DataAdapter.selectedTask, $scope.mode.name)
+      Message.toast Resource.string("msgSubmitTimeSuccess")
+      localStorage.clear()
+      $scope.mode.onSubmitClick()
+    else
+      submitError(msg, status)
+
+
+  ###
+    Error handle function for add previous log
+  ###
+  errorForOldLog = (conf) -> (msg, status) ->
+    PluginManager.notify(PluginManager.events.SENDED_TIME_ENTRY, msg, status, DataAdapter.selectedTask, $scope.mode.name)
+    Message.toast(Resource.string("msgSubmitTimeFail") + Resource.string("status", status), 3000)
+    Log.warn conf
 
   ###
    check time entry before starting track.
